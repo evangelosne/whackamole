@@ -245,7 +245,9 @@ input  [3:0] mole_index,   // 0..8
 
 output reg [3:0] vgaR,
 output reg [3:0] vgaG,
-output reg [3:0] vgaB
+output reg [3:0] vgaB,
+input in_wait,
+input in_done
 );
 // ------------------------------------------------------------
 // Layout constants (640x480)
@@ -265,6 +267,13 @@ localparam ROW2_Y = 370;
 // Hole size
 localparam HOLE_W = 80;
 localparam HOLE_H = 40;
+
+// whack a mole characters
+localparam game_left = 50;
+localparam title_left = 50;
+localparam game_btm = 70;
+localparam title_btm = 260;
+localparam gap = 20;
 
 // Mole body size (sits above hole)
 localparam MOLE_W = 60;
@@ -288,7 +297,7 @@ function automatic hole_rect;
     end
 endfunction
 
-funciton automatic square;
+function automatic square;
     input [9:0] x, y;
     begin
         square = 
@@ -344,60 +353,172 @@ wire mole_pixel = mole0 | mole1 | mole2 |
 
 // numbers under moles
 // One
-wire one = square(COL0_X, ROW0_Y - 40) || 
-            square(COL0_X, ROW0_Y - 30) ||
-            square(COL0_X, ROW0_Y - 20);
+wire one = square(COL0_X, ROW0_Y + 40) || 
+            square(COL0_X, ROW0_Y + 50) ||
+            square(COL0_X, ROW0_Y + 60);
 // Two
-wire two = square(COL1_X - 10, ROW0_Y - 40) ||
-            square(COL1_X, ROW0_Y - 40) ||
-            square(COL1_X, ROW0_Y - 30) ||
-            square(COL1_X, ROW0_Y - 20) ||
-            square(COL1_X - 10, ROW0_Y - 20) ||
-            square(COL1_X - 10, ROW0_Y - 10)
-            square(COL1_X - 10, ROW0_Y) ||
-            square(COL1_X, ROW0_Y);
+wire two = square(COL1_X - 10, ROW0_Y + 40) ||
+            square(COL1_X, ROW0_Y + 40) ||
+            square(COL1_X, ROW0_Y + 50) ||
+            square(COL1_X, ROW0_Y + 60) ||
+            square(COL1_X - 10, ROW0_Y + 60) ||
+            square(COL1_X - 10, ROW0_Y + 70) ||
+            square(COL1_X - 10, ROW0_Y + 80) ||
+            square(COL1_X, ROW0_Y + 80);
 // Three
-wire three = square(COL2_X - 10, ROW0_Y - 40) ||
-                square(COL2_X, ROW0_Y - 40) ||
-                square(COL2_X, ROW0_Y - 30) ||
-                square(COL2_X, ROW0_Y - 20) ||
-                square(COL2_X - 10, ROW0_Y - 20) ||
-                square(COL2_X, ROW0_Y - 10) ||
-                square(COL2_X - 10, ROW0_Y) ||
-                square(COL2_X, ROW0_Y);
+wire three = square(COL2_X - 10, ROW0_Y + 40) ||
+                square(COL2_X, ROW0_Y + 40) ||
+                square(COL2_X, ROW0_Y + 50) ||
+                square(COL2_X, ROW0_Y + 60) ||
+                square(COL2_X - 10, ROW0_Y + 60) ||
+                square(COL2_X, ROW0_Y + 70) ||
+                square(COL2_X - 10, ROW0_Y + 80) ||
+                square(COL2_X, ROW0_Y + 80);
 // Four
-wire four = square(COL0_X - 20, ROW2_Y - 40) ||
-            square(COL0_X, ROW2_Y - 40) ||
-            square(COL0_X - 20, ROW2_Y - 30) ||
-            square(COL0_X - 10, ROW2_Y - 30) ||
-            square(COL0_X, ROW2_Y - 30) ||
-            square(COL0_X, ROW2_Y - 20) ||
-            square(COL0_X, ROW2_Y - 10);
+wire four = square(COL0_X - 20, ROW2_Y + 40) ||
+            square(COL0_X, ROW2_Y + 40) ||
+            square(COL0_X - 20, ROW2_Y + 50) ||
+            square(COL0_X - 10, ROW2_Y + 50) ||
+            square(COL0_X, ROW2_Y + 50) ||
+            square(COL0_X, ROW2_Y + 60) ||
+            square(COL0_X, ROW2_Y + 70);
 // five
-wire five = square(COL1_X - 10, ROW1_Y - 40) ||
-            square(COL1_X, ROW1_Y - 40) ||
-            square(COL1_X - 10, ROW1_Y - 30) ||
-            square(COL1_X, ROW1_Y - 20) ||
-            square(COL1_X - 10, ROW1_Y - 20) ||
-            square(COL1_X, ROW1_Y - 10)
-            square(COL1_X - 10, ROW1_Y) ||
-            square(COL1_X, ROW1_Y);
+wire five = square(COL1_X - 10, ROW1_Y + 40) ||
+            square(COL1_X, ROW1_Y + 40) ||
+            square(COL1_X - 10, ROW1_Y + 50) ||
+            square(COL1_X, ROW1_Y + 60) ||
+            square(COL1_X - 10, ROW1_Y + 60) ||
+            square(COL1_X, ROW1_Y + 70) ||
+            square(COL1_X - 10, ROW1_Y + 80) ||
+            square(COL1_X, ROW1_Y + 80);
 // six
-wire six = square(COL2_X - 20, ROW1_Y - 40) ||
-            square(COL2_X - 10, ROW1_Y - 40) ||
-            square(COL2_X, ROW1_Y - 40) ||
-            square(COL2_X - 20, ROW1_Y - 30) ||
-            square(COL2_X - 20, ROW1_Y - 20) ||
-            square(COL2_X - 10, ROW1_Y - 30) ||
-            square(COL2_X, ROW1_Y - 30) ||
-            square(COL2_X - 20, ROW1_Y) ||
-            square(COL2_X - 10, ROW1_Y) ||
-            square(COL2_X, ROW1_Y) ||                                                                                                                                                                                       
+wire six = square(COL2_X - 20, ROW1_Y + 40) ||
+            square(COL2_X - 10, ROW1_Y + 40) ||
+            square(COL2_X, ROW1_Y + 40) ||
+            square(COL2_X - 20, ROW1_Y + 50) ||
+            square(COL2_X - 20, ROW1_Y + 60) ||
+            square(COL2_X - 10, ROW1_Y + 60) ||
+            square(COL2_X, ROW1_Y + 60) ||
+            square(COL2_X - 20, ROW1_Y + 70) ||
+            square(COL2_X, ROW1_Y + 70) ||
+            square(COL2_X - 20, ROW1_Y + 80) ||
+            square(COL2_X - 10, ROW1_Y + 80) ||
+            square(COL2_X, ROW1_Y + 80);
+// seven
+wire seven = square(COL0_X - 10, ROW2_Y + 40) ||
+                square(COL0_X, ROW2_Y + 40) ||
+                square(COL0_X, ROW2_Y + 50) ||
+                square(COL0_X, ROW2_Y + 60);
+// eight
+wire eight = square(COL1_X - 20, ROW2_Y + 40) ||
+            square(COL1_X - 10, ROW2_Y + 40) ||
+            square(COL1_X, ROW2_Y + 40) ||
+            square(COL1_X - 20, ROW2_Y + 50) ||
+            square(COL1_X, ROW2_Y + 50) ||
+            square(COL1_X - 20, ROW2_Y + 60) ||
+            square(COL1_X - 10, ROW2_Y + 60) ||
+            square(COL1_X, ROW2_Y + 60) ||
+            square(COL1_X - 20, ROW2_Y + 70) ||
+            square(COL1_X, ROW2_Y + 70) ||
+            square(COL1_X - 20, ROW2_Y + 80) ||
+            square(COL1_X - 10, ROW2_Y + 80) ||
+            square(COL1_X, ROW2_Y + 80);
+// nine
+wire nine = square(COL1_X - 20, ROW2_Y + 40) ||
+            square(COL1_X - 10, ROW2_Y + 40) ||
+            square(COL1_X, ROW2_Y + 40) ||
+            square(COL1_X - 20, ROW2_Y + 50) ||
+            square(COL1_X, ROW2_Y + 50) ||
+            square(COL1_X - 20, ROW2_Y + 60) ||
+            square(COL1_X - 10, ROW2_Y + 60) ||
+            square(COL1_X, ROW2_Y + 60) ||
+            square(COL1_X, ROW2_Y + 70) ||
+            square(COL1_X, ROW2_Y + 80);
+
+// whack a mole characters
+
+wire w = square(game_left, game_btm + 10) ||
+            square(game_left + 20, game_btm + 10) ||
+            square(game_left + 40, game_btm + 10) ||
+            square(game_left, game_btm) ||
+            square(game_left + 10, game_btm) ||
+            square(game_left + 20, game_btm) ||
+            square(game_left + 30, game_btm) ||
+            square(game_left + 40, game_btm);
+wire h = square(game_left + 60, game_btm + 20) ||
+            square(game_left + 80, game_btm + 20) ||
+            square(game_left + 60, game_btm + 10) ||
+            square(game_left + 70, game_btm + 10) ||
+            square(game_left + 80, game_btm + 10) ||
+            square(game_left + 60, game_btm) ||
+            square(game_left + 80, game_btm);
+wire a = square(game_left + 100, game_btm) ||
+            square(game_left + 120, game_btm) ||
+            square(game_left + 100, game_btm + 10) ||
+            square(game_left + 110, game_btm + 10) ||
+            square(game_left + 120, game_btm + 10) ||
+            square(game_left + 100, game_btm + 20) || 
+            square(game_left + 120, game_btm + 20) ||
+            square(game_left + 100, game_btm + 30) ||
+            square(game_left + 110, game_btm + 30) ||
+            square(game_left + 120, game_btm + 30);
+wire c = square(game_left + 140, game_btm) ||
+            square(game_left + 150, game_btm) ||
+            square(game_left + 140, game_btm + 10) ||
+            square(game_left + 140, game_btm + 20) ||
+            square(game_left + 150, game_btm + 20);
+wire k = square(game_left + 170, game_btm) ||
+            square(game_left + 170, game_btm + 10) ||
+            square(game_left + 180, game_btm + 10) ||
+            square(game_left + 170, game_btm + 20) ||
+            square(game_left + 170, game_btm + 30) ||
+            square(game_left + 180, game_btm + 30) ||
+            square(game_left + 170, game_btm + 40);
+wire a2 = square(game_left + 190, game_btm) ||
+            square(game_left + 210, game_btm) ||
+            square(game_left + 190, game_btm + 10) ||
+            square(game_left + 200, game_btm + 10) ||
+            square(game_left + 210, game_btm + 10) ||
+            square(game_left + 190, game_btm + 20) || 
+            square(game_left + 210, game_btm + 20) ||
+            square(game_left + 190, game_btm + 30) ||
+            square(game_left + 200, game_btm + 30) ||
+            square(game_left + 210, game_btm + 30);
+wire m = square(game_left + 230, game_btm) ||
+            square(game_left + 250, game_btm) ||
+            square(game_left + 270, game_btm) ||
+            square(game_left + 230, game_btm + 10) ||
+            square(game_left + 240, game_btm + 10) ||
+            square(game_left + 250, game_btm + 10) ||
+            square(game_left + 260, game_btm + 10) ||
+            square(game_left + 270, game_btm + 10);
+wire o = square(game_left + 290, game_btm) ||
+            square(game_left + 300, game_btm) ||
+            square(game_left + 310, game_btm) ||
+            square(game_left + 290, game_btm + 10) || 
+            square(game_left + 310, game_btm + 10) ||
+            square(game_left + 290, game_btm + 20) ||
+            square(game_left + 300, game_btm + 20) ||
+            square(game_left + 310, game_btm + 20);
+wire l = square(game_left + 330, game_btm) ||
+            square(game_left + 340, game_btm) ||
+            square(game_left + 330, game_btm + 10) ||
+            square(game_left + 330, game_btm + 20);
+wire e = square(game_left + 350, game_btm) ||
+            square(game_left + 360, game_btm) ||
+            square(game_left + 350, game_btm + 10) ||
+            square(game_left + 350, game_btm + 20) ||
+            square(game_left + 360, game_btm + 20) ||
+            square(game_left + 350, game_btm + 30) ||
+            square(game_left + 350, game_btm + 40) ||
+            square(game_left + 360, game_btm + 40);
 
 
 
 wire number = one | two | three | four |
                 five | six | seven | eight | nine;
+
+wire letters = w | h | a | c | k | a2 | m | o | l | e;
 
 
 // ------------------------------------------------------------
@@ -419,6 +540,19 @@ always @(posedge pix_clk or posedge reset) begin
         vgaR <= 0;
         vgaG <= 0;
         vgaB <= 0;
+    end else if (in_wait) begin
+    if (letters) begin
+        vgaR <= 4'hF;
+        vgaG <= 4'hF;
+        vgaB <= 4'hF;
+    end else begin
+        vgaR <= 4'h0;
+        vgaG <= 4'h4;
+        vgaB <= 4'h0;
+    end else if (in_done) begin // add done state logic for game over
+        vgaR <= 4'h0;
+        vgaG <= 4'h0;
+        vgaB <= 4'h4;
     end else if (in_header) begin
         // blue header bar (like reference image top)
         vgaR <= 4'h0;
@@ -435,9 +569,13 @@ always @(posedge pix_clk or posedge reset) begin
         vgaG <= 4'h0;
         vgaB <= 4'h0;
     end else if (number) begin
-        vga_r <= 1;
-        vga_g <= 1;
-        vga_b <= 1;
+        vgaR <= 1;
+        vgaG <= 1;
+        vgaB <= 1;
+    end else if (letters) begin
+        vgaR <= 1;
+        vgaG <= 1;
+        vgaB <= 1;
     end else begin
         // background – dark green
         vgaR <= 4'h0;
@@ -448,7 +586,10 @@ end
 
 endmodule
 
+// display the score on the ssd
+module ssd_display (
 
+);
 
 module whackamole_top (
 input        Clk100MHz,
@@ -475,6 +616,8 @@ HIT    = 5'b01000,
 DONE   = 5'b10000;
 
 wire [4:0] state;
+wire in_wait;
+wire in_done;
 wire Ack, Reset;
 assign Ack = BtnD;
 assign Reset = BtnC;
@@ -484,6 +627,8 @@ assign Ld1 = (state == INI);
 assign Ld2 = (state == SPAWN);
 assign Ld3 = (state == HIT);
 assign Ld4 = (state == DONE);
+assign in_wait = (state == WAIT);
+assign in_done = (state == DONE);
 
 wire pix_clk;
 clk_div_25MHz clkdiv(
@@ -540,9 +685,12 @@ whackamole_video video_unit (
     .pixel_x(pixel_x),
     .pixel_y(pixel_y),
     .mole_index(mole_index),
+    .in_wait(in_wait),
+    .in_done(in_done),
     .vgaR(vgaR),
     .vgaG(vgaG),
     .vgaB(vgaB)
 );
+
 
 endmodule
