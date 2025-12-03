@@ -541,15 +541,15 @@ always @(posedge pix_clk or posedge reset) begin
         vgaG <= 0;
         vgaB <= 0;
     end else if (in_wait) begin
-    if (letters) begin
-        vgaR <= 4'hF;
-        vgaG <= 4'hF;
-        vgaB <= 4'hF;
-    end else begin
-        vgaR <= 4'h0;
-        vgaG <= 4'h4;
-        vgaB <= 4'h0;
-    end else if (in_done) begin // add done state logic for game over
+        if (letters) begin
+            vgaR <= 4'hF;
+            vgaG <= 4'hF;
+            vgaB <= 4'hF;
+        end else begin
+            vgaR <= 4'h4;
+            vgaG <= 4'h0;
+            vgaB <= 4'h0;
+    end end else if (in_done) begin // add done state logic for game over
         vgaR <= 4'h0;
         vgaG <= 4'h0;
         vgaB <= 4'h4;
