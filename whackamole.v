@@ -269,9 +269,14 @@ localparam HOLE_W = 80;
 localparam HOLE_H = 40;
 
 // whack a mole characters
-localparam game_left = 50;
+localparam game_left = 140; //changed from 50
 localparam title_left = 50;
-localparam game_btm = 70;
+localparam game_btm = 40; // changed from 70
+
+// "GAME OVER" text position (center-ish)
+localparam GO_LEFT = 200;  // x start for GAME OVER
+localparam GO_BTM  = 220;  // baseline y for GAME OVER
+
 localparam title_btm = 260;
 localparam gap = 20;
 
@@ -375,13 +380,13 @@ wire three = square(COL2_X - 10, ROW0_Y + 40) ||
                 square(COL2_X - 10, ROW0_Y + 80) ||
                 square(COL2_X, ROW0_Y + 80);
 // Four
-wire four = square(COL0_X - 20, ROW2_Y + 40) ||
-            square(COL0_X, ROW2_Y + 40) ||
-            square(COL0_X - 20, ROW2_Y + 50) ||
-            square(COL0_X - 10, ROW2_Y + 50) ||
-            square(COL0_X, ROW2_Y + 50) ||
-            square(COL0_X, ROW2_Y + 60) ||
-            square(COL0_X, ROW2_Y + 70);
+wire four = square(COL0_X - 20, ROW1_Y + 40) ||
+            square(COL0_X, ROW1_Y + 40) ||
+            square(COL0_X - 20, ROW1_Y + 50) ||
+            square(COL0_X - 10, ROW1_Y + 50) ||
+            square(COL0_X, ROW1_Y + 50) ||
+            square(COL0_X, ROW1_Y + 60) ||
+            square(COL0_X, ROW1_Y + 70);
 // five
 wire five = square(COL1_X - 10, ROW1_Y + 40) ||
             square(COL1_X, ROW1_Y + 40) ||
@@ -424,100 +429,307 @@ wire eight = square(COL1_X - 20, ROW2_Y + 40) ||
             square(COL1_X - 10, ROW2_Y + 80) ||
             square(COL1_X, ROW2_Y + 80);
 // nine
-wire nine = square(COL1_X - 20, ROW2_Y + 40) ||
-            square(COL1_X - 10, ROW2_Y + 40) ||
-            square(COL1_X, ROW2_Y + 40) ||
-            square(COL1_X - 20, ROW2_Y + 50) ||
-            square(COL1_X, ROW2_Y + 50) ||
-            square(COL1_X - 20, ROW2_Y + 60) ||
-            square(COL1_X - 10, ROW2_Y + 60) ||
-            square(COL1_X, ROW2_Y + 60) ||
-            square(COL1_X, ROW2_Y + 70) ||
-            square(COL1_X, ROW2_Y + 80);
+wire nine = square(COL2_X - 20, ROW2_Y + 40) ||
+            square(COL2_X - 10, ROW2_Y + 40) ||
+            square(COL2_X, ROW2_Y + 40) ||
+            square(COL2_X - 20, ROW2_Y + 50) ||
+            square(COL2_X, ROW2_Y + 50) ||
+            square(COL2_X - 20, ROW2_Y + 60) ||
+            square(COL2_X - 10, ROW2_Y + 60) ||
+            square(COL2_X, ROW2_Y + 60) ||
+            square(COL2_X, ROW2_Y + 70) ||
+            square(COL2_X, ROW2_Y + 80);
 
 // whack a mole characters
+// ------------------------------------------------------------
+// WHACKAMOLE title letters (blocky 10x10 squares)
+// Uses game_left as starting X and game_btm as baseline Y
+// Each letter is ~40px wide, spaced by 20px in X
+// ------------------------------------------------------------
 
-wire w = square(game_left, game_btm + 10) ||
-            square(game_left + 20, game_btm + 10) ||
-            square(game_left + 40, game_btm + 10) ||
-            square(game_left, game_btm) ||
-            square(game_left + 10, game_btm) ||
-            square(game_left + 20, game_btm) ||
-            square(game_left + 30, game_btm) ||
-            square(game_left + 40, game_btm);
-wire h = square(game_left + 60, game_btm + 20) ||
-            square(game_left + 80, game_btm + 20) ||
-            square(game_left + 60, game_btm + 10) ||
-            square(game_left + 70, game_btm + 10) ||
-            square(game_left + 80, game_btm + 10) ||
-            square(game_left + 60, game_btm) ||
-            square(game_left + 80, game_btm);
-wire a = square(game_left + 100, game_btm) ||
-            square(game_left + 120, game_btm) ||
-            square(game_left + 100, game_btm + 10) ||
-            square(game_left + 110, game_btm + 10) ||
-            square(game_left + 120, game_btm + 10) ||
-            square(game_left + 100, game_btm + 20) || 
-            square(game_left + 120, game_btm + 20) ||
-            square(game_left + 100, game_btm + 30) ||
-            square(game_left + 110, game_btm + 30) ||
-            square(game_left + 120, game_btm + 30);
-wire c = square(game_left + 140, game_btm) ||
-            square(game_left + 150, game_btm) ||
-            square(game_left + 140, game_btm + 10) ||
-            square(game_left + 140, game_btm + 20) ||
-            square(game_left + 150, game_btm + 20);
-wire k = square(game_left + 170, game_btm) ||
-            square(game_left + 170, game_btm + 10) ||
-            square(game_left + 180, game_btm + 10) ||
-            square(game_left + 170, game_btm + 20) ||
-            square(game_left + 170, game_btm + 30) ||
-            square(game_left + 180, game_btm + 30) ||
-            square(game_left + 170, game_btm + 40);
-wire a2 = square(game_left + 190, game_btm) ||
-            square(game_left + 210, game_btm) ||
-            square(game_left + 190, game_btm + 10) ||
-            square(game_left + 200, game_btm + 10) ||
-            square(game_left + 210, game_btm + 10) ||
-            square(game_left + 190, game_btm + 20) || 
-            square(game_left + 210, game_btm + 20) ||
-            square(game_left + 190, game_btm + 30) ||
-            square(game_left + 200, game_btm + 30) ||
-            square(game_left + 210, game_btm + 30);
-wire m = square(game_left + 230, game_btm) ||
-            square(game_left + 250, game_btm) ||
-            square(game_left + 270, game_btm) ||
-            square(game_left + 230, game_btm + 10) ||
-            square(game_left + 240, game_btm + 10) ||
-            square(game_left + 250, game_btm + 10) ||
-            square(game_left + 260, game_btm + 10) ||
-            square(game_left + 270, game_btm + 10);
-wire o = square(game_left + 290, game_btm) ||
-            square(game_left + 300, game_btm) ||
-            square(game_left + 310, game_btm) ||
-            square(game_left + 290, game_btm + 10) || 
-            square(game_left + 310, game_btm + 10) ||
-            square(game_left + 290, game_btm + 20) ||
-            square(game_left + 300, game_btm + 20) ||
-            square(game_left + 310, game_btm + 20);
-wire l = square(game_left + 330, game_btm) ||
-            square(game_left + 340, game_btm) ||
-            square(game_left + 330, game_btm + 10) ||
-            square(game_left + 330, game_btm + 20);
-wire e = square(game_left + 350, game_btm) ||
-            square(game_left + 360, game_btm) ||
-            square(game_left + 350, game_btm + 10) ||
-            square(game_left + 350, game_btm + 20) ||
-            square(game_left + 360, game_btm + 20) ||
-            square(game_left + 350, game_btm + 30) ||
-            square(game_left + 350, game_btm + 40) ||
-            square(game_left + 360, game_btm + 40);
+// W
+wire w =
+    // left vertical
+    square(game_left + 0,  game_btm + 0)  ||
+    square(game_left + 0,  game_btm + 10) ||
+    square(game_left + 0,  game_btm + 20) ||
+    square(game_left + 0,  game_btm + 30) ||
+    // right vertical
+    square(game_left + 40, game_btm + 0)  ||
+    square(game_left + 40, game_btm + 10) ||
+    square(game_left + 40, game_btm + 20) ||
+    square(game_left + 40, game_btm + 30) ||
+    // bottom middle “V”
+    square(game_left + 20, game_btm + 30);
 
+// H
+wire h =
+    // left vertical
+    square(game_left + 60, game_btm + 0)  ||
+    square(game_left + 60, game_btm + 10) ||
+    square(game_left + 60, game_btm + 20) ||
+    square(game_left + 60, game_btm + 30) ||
+    // right vertical
+    square(game_left + 80, game_btm + 0)  ||
+    square(game_left + 80, game_btm + 10) ||
+    square(game_left + 80, game_btm + 20) ||
+    square(game_left + 80, game_btm + 30) ||
+    // middle bar
+    square(game_left + 70, game_btm + 15);
+
+// A
+wire a =
+    // top row
+    square(game_left + 100, game_btm + 0)  ||
+    square(game_left + 120, game_btm + 0)  ||
+    // upper middle
+    square(game_left + 110, game_btm + 10) ||
+    // vertical legs
+    square(game_left + 100, game_btm + 20) ||
+    square(game_left + 100, game_btm + 30) ||
+    square(game_left + 120, game_btm + 20) ||
+    square(game_left + 120, game_btm + 30) ||
+    // middle bar
+    square(game_left + 110, game_btm + 20);
+
+// C
+wire c =
+    // top row
+    square(game_left + 140, game_btm + 0)  ||
+    square(game_left + 150, game_btm + 0)  ||
+    // left vertical
+    square(game_left + 140, game_btm + 10) ||
+    square(game_left + 140, game_btm + 20) ||
+    square(game_left + 140, game_btm + 30) ||
+    // bottom row
+    square(game_left + 140, game_btm + 30) ||
+    square(game_left + 150, game_btm + 30);
+
+// K
+wire k =
+    // vertical spine
+    square(game_left + 170, game_btm + 0)  ||
+    square(game_left + 170, game_btm + 10) ||
+    square(game_left + 170, game_btm + 20) ||
+    square(game_left + 170, game_btm + 30) ||
+    // upper diagonal
+    square(game_left + 180, game_btm + 10) ||
+    square(game_left + 190, game_btm + 0)  ||
+    // lower diagonal
+    square(game_left + 180, game_btm + 20) ||
+    square(game_left + 190, game_btm + 30);
+
+// second A (same as first A, just shifted)
+wire a2 =
+    // top row
+    square(game_left + 210, game_btm + 0)  ||
+    square(game_left + 230, game_btm + 0)  ||
+    // upper middle
+    square(game_left + 220, game_btm + 10) ||
+    // vertical legs
+    square(game_left + 210, game_btm + 20) ||
+    square(game_left + 210, game_btm + 30) ||
+    square(game_left + 230, game_btm + 20) ||
+    square(game_left + 230, game_btm + 30) ||
+    // middle bar
+    square(game_left + 220, game_btm + 20);
+
+// M
+wire m =
+    // left vertical
+    square(game_left + 250, game_btm + 0)  ||
+    square(game_left + 250, game_btm + 10) ||
+    square(game_left + 250, game_btm + 20) ||
+    square(game_left + 250, game_btm + 30) ||
+    // right vertical
+    square(game_left + 290, game_btm + 0)  ||
+    square(game_left + 290, game_btm + 10) ||
+    square(game_left + 290, game_btm + 20) ||
+    square(game_left + 290, game_btm + 30) ||
+    // inner “peaks”
+    square(game_left + 260, game_btm + 10) ||
+    square(game_left + 280, game_btm + 10);
+
+// O
+wire o =
+    // top row
+    square(game_left + 310, game_btm + 0)  ||
+    square(game_left + 320, game_btm + 0)  ||
+    square(game_left + 330, game_btm + 0)  ||
+    // side walls
+    square(game_left + 310, game_btm + 10) ||
+    square(game_left + 310, game_btm + 20) ||
+    square(game_left + 330, game_btm + 10) ||
+    square(game_left + 330, game_btm + 20) ||
+    // bottom row
+    square(game_left + 310, game_btm + 30) ||
+    square(game_left + 320, game_btm + 30) ||
+    square(game_left + 330, game_btm + 30);
+
+// L
+wire l =
+    // vertical
+    square(game_left + 350, game_btm + 0)  ||
+    square(game_left + 350, game_btm + 10) ||
+    square(game_left + 350, game_btm + 20) ||
+    square(game_left + 350, game_btm + 30) ||
+    // bottom bar
+    square(game_left + 360, game_btm + 30);
+
+// E
+wire e =
+    // vertical
+    square(game_left + 380, game_btm + 0)  ||
+    square(game_left + 380, game_btm + 10) ||
+    square(game_left + 380, game_btm + 20) ||
+    square(game_left + 380, game_btm + 30) ||
+    // top bar
+    square(game_left + 390, game_btm + 0)  ||
+    square(game_left + 400, game_btm + 0)  ||
+    // middle bar
+    square(game_left + 390, game_btm + 15) ||
+    // bottom bar
+    square(game_left + 390, game_btm + 30) ||
+    square(game_left + 400, game_btm + 30);
+
+// ------------------------------------------------------------
+// GAME OVER letters (blocky 10x10 squares)
+// Positioned using GO_LEFT, GO_BTM
+// G A M E   O V E R
+// ------------------------------------------------------------
+
+// G
+wire go_g =
+    // top row
+    square(GO_LEFT + 0,  GO_BTM + 0)  ||
+    square(GO_LEFT + 10, GO_BTM + 0)  ||
+    square(GO_LEFT + 20, GO_BTM + 0)  ||
+    // left column
+    square(GO_LEFT + 0,  GO_BTM + 10) ||
+    square(GO_LEFT + 0,  GO_BTM + 20) ||
+    square(GO_LEFT + 0,  GO_BTM + 30) ||
+    // bottom row
+    square(GO_LEFT + 0,  GO_BTM + 30) ||
+    square(GO_LEFT + 10, GO_BTM + 30) ||
+    square(GO_LEFT + 20, GO_BTM + 30) ||
+    // inner G bar
+    square(GO_LEFT + 20, GO_BTM + 20) ||
+    square(GO_LEFT + 10, GO_BTM + 20);
+
+// A
+wire go_a =
+    // top row
+    square(GO_LEFT + 40, GO_BTM + 0)  ||
+    square(GO_LEFT + 60, GO_BTM + 0)  ||
+    // upper middle
+    square(GO_LEFT + 50, GO_BTM + 10) ||
+    // legs
+    square(GO_LEFT + 40, GO_BTM + 20) ||
+    square(GO_LEFT + 40, GO_BTM + 30) ||
+    square(GO_LEFT + 60, GO_BTM + 20) ||
+    square(GO_LEFT + 60, GO_BTM + 30) ||
+    // middle bar
+    square(GO_LEFT + 50, GO_BTM + 20);
+
+// M
+wire go_m =
+    // left vertical
+    square(GO_LEFT + 80,  GO_BTM + 0)  ||
+    square(GO_LEFT + 80,  GO_BTM + 10) ||
+    square(GO_LEFT + 80,  GO_BTM + 20) ||
+    square(GO_LEFT + 80,  GO_BTM + 30) ||
+    // right vertical
+    square(GO_LEFT + 110, GO_BTM + 0)  ||
+    square(GO_LEFT + 110, GO_BTM + 10) ||
+    square(GO_LEFT + 110, GO_BTM + 20) ||
+    square(GO_LEFT + 110, GO_BTM + 30) ||
+    // inner peaks
+    square(GO_LEFT + 90,  GO_BTM + 10) ||
+    square(GO_LEFT + 100, GO_BTM + 10);
+
+// E
+wire go_e1 =
+    // vertical
+    square(GO_LEFT + 130, GO_BTM + 0)  ||
+    square(GO_LEFT + 130, GO_BTM + 10) ||
+    square(GO_LEFT + 130, GO_BTM + 20) ||
+    square(GO_LEFT + 130, GO_BTM + 30) ||
+    // top bar
+    square(GO_LEFT + 140, GO_BTM + 0)  ||
+    square(GO_LEFT + 150, GO_BTM + 0)  ||
+    // middle bar
+    square(GO_LEFT + 140, GO_BTM + 15) ||
+    // bottom bar
+    square(GO_LEFT + 140, GO_BTM + 30) ||
+    square(GO_LEFT + 150, GO_BTM + 30);
+
+// O
+wire go_o =
+    // top row
+    square(GO_LEFT + 190, GO_BTM + 0)  ||
+    square(GO_LEFT + 200, GO_BTM + 0)  ||
+    square(GO_LEFT + 210, GO_BTM + 0)  ||
+    // sides
+    square(GO_LEFT + 190, GO_BTM + 10) ||
+    square(GO_LEFT + 190, GO_BTM + 20) ||
+    square(GO_LEFT + 210, GO_BTM + 10) ||
+    square(GO_LEFT + 210, GO_BTM + 20) ||
+    // bottom row
+    square(GO_LEFT + 190, GO_BTM + 30) ||
+    square(GO_LEFT + 200, GO_BTM + 30) ||
+    square(GO_LEFT + 210, GO_BTM + 30);
+
+// V
+wire go_v =
+    // top left & right
+    square(GO_LEFT + 230, GO_BTM + 0)  ||
+    square(GO_LEFT + 250, GO_BTM + 0)  ||
+    // middle
+    square(GO_LEFT + 235, GO_BTM + 10) ||
+    square(GO_LEFT + 245, GO_BTM + 10) ||
+    // bottom point
+    square(GO_LEFT + 240, GO_BTM + 20) ||
+    square(GO_LEFT + 240, GO_BTM + 30);
+
+// E (second E)
+wire go_e2 =
+    // vertical
+    square(GO_LEFT + 270, GO_BTM + 0)  ||
+    square(GO_LEFT + 270, GO_BTM + 10) ||
+    square(GO_LEFT + 270, GO_BTM + 20) ||
+    square(GO_LEFT + 270, GO_BTM + 30) ||
+    // top bar
+    square(GO_LEFT + 280, GO_BTM + 0)  ||
+    square(GO_LEFT + 290, GO_BTM + 0)  ||
+    // middle bar
+    square(GO_LEFT + 280, GO_BTM + 15) ||
+    // bottom bar
+    square(GO_LEFT + 280, GO_BTM + 30) ||
+    square(GO_LEFT + 290, GO_BTM + 30);
+
+// R
+wire go_r =
+    // vertical spine
+    square(GO_LEFT + 310, GO_BTM + 0)  ||
+    square(GO_LEFT + 310, GO_BTM + 10) ||
+    square(GO_LEFT + 310, GO_BTM + 20) ||
+    square(GO_LEFT + 310, GO_BTM + 30) ||
+    // upper loop (like P)
+    square(GO_LEFT + 320, GO_BTM + 0)  ||
+    square(GO_LEFT + 330, GO_BTM + 0)  ||
+    square(GO_LEFT + 330, GO_BTM + 10) ||
+    square(GO_LEFT + 320, GO_BTM + 20) ||
+    // diagonal leg
+    square(GO_LEFT + 320, GO_BTM + 30);
+
+// Combine all GAME OVER pixels
+wire game_over_letters = go_g | go_a | go_m | go_e1 | go_o | go_v | go_e2 | go_r;
 
 
 wire number = one | two | three | four |
                 five | six | seven | eight | nine;
 
+// just the raw WHACKAMOLE bitmap
 wire letters = w | h | a | c | k | a2 | m | o | l | e;
 
 
@@ -535,12 +747,15 @@ always @(posedge pix_clk or posedge reset) begin
         vgaR <= 0;
         vgaG <= 0;
         vgaB <= 0;
+
     end else if (!video_on) begin
         // outside visible area
         vgaR <= 0;
         vgaG <= 0;
         vgaB <= 0;
+
     end else if (in_wait) begin
+        // waiting screen background + title
         if (letters) begin
             vgaR <= 4'hF;
             vgaG <= 4'hF;
@@ -549,33 +764,58 @@ always @(posedge pix_clk or posedge reset) begin
             vgaR <= 4'h4;
             vgaG <= 4'h0;
             vgaB <= 4'h0;
-    end end else if (in_done) begin // add done state logic for game over
-        vgaR <= 4'h0;
-        vgaG <= 4'h0;
-        vgaB <= 4'h4;
+        end
+
+    end else if (in_done) begin
+        // GAME OVER screen: blue background + white text
+        if (game_over_letters) begin
+            vgaR <= 4'hF;
+            vgaG <= 4'hF;
+            vgaB <= 4'hF;   // white letters
+        end else begin
+            vgaR <= 4'h0;
+            vgaG <= 4'h0;
+            vgaB <= 4'h4;   // dark blue background
+        end
+
     end else if (in_header) begin
-        // blue header bar (like reference image top)
-        vgaR <= 4'h0;
-        vgaG <= 4'h0;
-        vgaB <= 4'hF;
+        // header during game
+        if (letters) begin
+            // draw "WHACKAMOLE" in white
+            vgaR <= 4'hF;
+            vgaG <= 4'hF;
+            vgaB <= 4'hF;
+        end else begin
+            // blue header bar background
+            vgaR <= 4'h0;
+            vgaG <= 4'h0;
+            vgaB <= 4'hF;
+        end
+
     end else if (mole_pixel) begin
         // mole body – brown
         vgaR <= 4'h8;
         vgaG <= 4'h4;
         vgaB <= 4'h0;
+
     end else if (hole_pixel) begin
-        // hole – dark/black
+        // hole – black
         vgaR <= 4'h0;
         vgaG <= 4'h0;
         vgaB <= 4'h0;
+
     end else if (number) begin
-        vgaR <= 1;
-        vgaG <= 1;
-        vgaB <= 1;
+        // numbers under holes
+        vgaR <= 4'hF;
+        vgaG <= 4'hF;
+        vgaB <= 4'hF;
+
     end else if (letters) begin
-        vgaR <= 1;
-        vgaG <= 1;
-        vgaB <= 1;
+        // (optional) letters drawn outside header/wait (probably won't happen)
+        vgaR <= 4'hF;
+        vgaG <= 4'hF;
+        vgaB <= 4'hF;
+
     end else begin
         // background – dark green
         vgaR <= 4'h0;
@@ -584,12 +824,13 @@ always @(posedge pix_clk or posedge reset) begin
     end
 end
 
+
 endmodule
 
 // display the score on the ssd
-module ssd_display (
+//module ssd_display (
 
-);
+//);
 
 module whackamole_top (
 input        Clk100MHz,
